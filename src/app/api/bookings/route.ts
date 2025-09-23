@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { stripe } from '@/lib/stripe';
 import { addMinutes } from 'date-fns';
 
 export async function POST(request: Request) {
@@ -54,11 +55,34 @@ export async function POST(request: Request) {
         endTime: bookingEndTime,
         customerName,
         customerEmail,
-        // Status will be PENDING by default
       },
     });
 
-    return NextResponse.json(newBooking, { status: 201 });
+    // Create a Stripe Checkout Session
+    const checkoutSession = await stripe.checkout.sessions.create({
+      payment_method_types: ['card', 'p24'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'pln',
+            product_data: {
+              name: room.name,
+              description: `Rezerwacja pokoju na dzień ${bookingStartTime.toLocaleDateString()} o godzinie ${bookingStartTime.toLocaleTimeString()}`,
+            },
+            unit_amount: room.price * 100, // Price in cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/rooms/${room.id}`,
+      metadata: {
+        bookingId: newBooking.id,
+      },
+    });
+
+    return NextResponse.json({ url: checkoutSession.url }, { status: 201 });
   } catch (error) {
     console.error('Error creating booking:', error);
     return NextResponse.json(

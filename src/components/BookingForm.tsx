@@ -5,6 +5,7 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { format, isBefore, addMinutes, setHours, setMinutes, isSameDay } from 'date-fns';
 import { Booking, Room } from '@prisma/client';
+import { loadStripe } from '@stripe/stripe-js';
 
 interface BookingFormProps {
   room: Room;
@@ -97,17 +98,16 @@ export default function BookingForm({ room }: BookingFormProps) {
         throw new Error(errorData.error || 'Failed to create booking');
       }
 
-      const newBooking = await response.json();
-      // TODO: Redirect to payment
-      alert(`Booking successful! Your booking ID is ${newBooking.id}. Redirecting to payment...`);
-      // For now, just refresh the data
-      setSelectedDate(undefined);
-      setSelectedTime(undefined);
-      setCustomerName('');
-      setCustomerEmail('');
-      // Re-fetch bookings to update calendar
-      const bookingsResponse = await fetch(`/api/rooms/${room.id}/bookings`);
-      setBookings(await bookingsResponse.json());
+      const { url } = await response.json();
+
+      if (!url) {
+        throw new Error('Failed to create Stripe Checkout session');
+      }
+
+      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+      if (stripe) {
+        await stripe.redirectToCheckout({ sessionId: url.split('?session_id=')[1] });
+      }
 
     } catch (err: any) {
       setSubmitError(err.message);
