@@ -117,48 +117,54 @@ export default function BookingForm({ room }: BookingFormProps) {
   };
 
   return (
-    <div className="p-6 border rounded-lg bg-white shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Zarezerwuj termin</h2>
-      {submitError && <p className="text-red-500 bg-red-100 p-3 rounded mb-4">Błąd: {submitError}</p>}
+    <div className="space-y-8">
+      {submitError && <p className="text-red-600 bg-red-100 p-4 rounded-lg text-center font-semibold">Błąd: {submitError}</p>}
       {isLoading ? (
-        <p>Ładowanie kalendarza...</p>
+        <div className="text-center text-gray-600">Ładowanie kalendarza...</div>
       ) : (
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold mb-2">1. Wybierz datę</h3>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="flex flex-col items-center">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">1. Wybierz datę</h3>
               <DayPicker
                 mode="single"
                 selected={selectedDate}
                 onSelect={handleDateSelect}
                 disabled={{ before: new Date() }}
-                className="rounded-md border"
+                className="rounded-lg border shadow-sm bg-white p-4"
+                classNames={{
+                  head_cell: 'w-10 font-semibold text-gray-500',
+                  cell: 'w-10 h-10 text-center',
+                  day_selected: 'bg-blue-600 text-white hover:bg-blue-700 rounded-full',
+                  day_today: 'bg-blue-100 text-blue-700 font-bold rounded-full',
+                  day: 'rounded-full'
+                }}
               />
             </div>
-            <div>
+            <div className="flex flex-col items-center">
               {selectedDate && (
-                <div>
-                  <h3 className="font-semibold mb-2">2. Wybierz godzinę</h3>
-                  <p className="text-center font-medium mb-4">
+                <div className="w-full max-w-sm">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">2. Wybierz godzinę</h3>
+                  <p className="text-center font-medium text-gray-600 mb-4">
                     Wybrano: {format(selectedDate, 'dd.MM.yyyy')}
                   </p>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                     {availableSlots.length > 0 ? (
                       availableSlots.map((slot) => (
                         <button
                           key={slot.toISOString()}
                           type="button"
                           onClick={() => setSelectedTime(slot)}
-                          className={`p-2 border rounded-md text-center text-sm font-semibold transition-colors ${
+                          className={`p-3 border rounded-lg text-center font-semibold transition-all duration-200 ${
                             selectedTime?.getTime() === slot.getTime()
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-gray-100 hover:bg-blue-100'
+                              ? 'bg-blue-600 text-white scale-105 shadow-lg'
+                              : 'bg-gray-100 hover:bg-blue-100 hover:shadow-md'
                           }`}>
                           {format(slot, 'HH:mm')}
                         </button>
                       ))
                     ) : (
-                      <p className="col-span-3 text-center text-gray-500">Brak wolnych terminów w tym dniu.</p>
+                      <p className="col-span-full text-center text-gray-500 py-4">Brak wolnych terminów w tym dniu.</p>
                     )}
                   </div>
                 </div>
@@ -167,39 +173,41 @@ export default function BookingForm({ room }: BookingFormProps) {
           </div>
 
           {selectedTime && (
-            <div className="col-span-1 md:col-span-2 mt-6 pt-6 border-t">
-              <h3 className="font-semibold mb-4 text-lg">3. Podaj swoje dane</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="pt-8 border-t border-gray-200">
+              <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">3. Podaj swoje dane</h3>
+              <div className="max-w-lg mx-auto grid grid-cols-1 gap-6">
                 <div>
-                  <label htmlFor="customerName" className="block text-sm font-medium text-gray-700">Imię i nazwisko</label>
+                  <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">Imię i nazwisko</label>
                   <input
                     type="text"
                     id="customerName"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
+                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-3 px-4 focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
                 </div>
                 <div>
-                  <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700">Adres e-mail</label>
+                  <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700 mb-1">Adres e-mail</label>
                   <input
                     type="email"
                     id="customerEmail"
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"
+                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-3 px-4 focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
                 </div>
               </div>
-              <button
-                type="submit"
-                disabled={!selectedDate || !selectedTime || !customerName || !customerEmail || isSubmitting}
-                className="mt-6 w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 disabled:bg-gray-400 font-semibold text-lg"
-              >
-                {isSubmitting ? 'Przetwarzanie...' : 'Zarezerwuj i przejdź do płatności'}
-              </button>
+              <div className="mt-8 text-center">
+                <button
+                  type="submit"
+                  disabled={!selectedDate || !selectedTime || !customerName || !customerEmail || isSubmitting}
+                  className="w-full max-w-md bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-bold text-lg transition-transform transform hover:scale-105"
+                >
+                  {isSubmitting ? 'Przetwarzanie...' : 'Zarezerwuj i przejdź do płatności'}
+                </button>
+              </div>
             </div>
           )}
         </form>
