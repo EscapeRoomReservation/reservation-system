@@ -6,6 +6,7 @@ import 'react-day-picker/dist/style.css';
 import { format, isBefore, addMinutes, setHours, setMinutes, isSameDay } from 'date-fns';
 import { Booking, Room } from '@prisma/client';
 import { loadStripe } from '@stripe/stripe-js';
+import { useSession } from 'next-auth/react';
 
 interface BookingFormProps {
   room: Room;
@@ -34,10 +35,11 @@ const generateTimeSlots = (date: Date, duration: number, existingBookings: Booki
 };
 
 export default function BookingForm({ room }: BookingFormProps) {
+  const { data: session } = useSession();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<Date | undefined>();
-  const [customerName, setCustomerName] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerName, setCustomerName] = useState(session?.user?.name ?? '');
+  const [customerEmail, setCustomerEmail] = useState(session?.user?.email ?? '');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -90,6 +92,7 @@ export default function BookingForm({ room }: BookingFormProps) {
           startTime: selectedTime.toISOString(),
           customerName,
           customerEmail,
+          userId: session?.user?.id,
         }),
       });
 
