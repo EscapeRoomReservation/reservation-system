@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^6.16.2",
     "@stripe/stripe-js": "^7.9.0",
@@ -28,6 +31,7 @@
     "eslint-config-next": "15.5.3",
     "prisma": "^6.16.2",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

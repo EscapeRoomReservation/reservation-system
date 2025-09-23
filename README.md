@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# System Rezerwacji Escape Roomów
 
-## Getting Started
+Kompletna aplikacja webowa do rezerwacji pokojów zagadek (escape room), zbudowana przy użyciu Next.js, Prisma i Stripe.
 
-First, run the development server:
+## Główne Technologie
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Framework:** [Next.js](https://nextjs.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Baza Danych:** [SQLite](https://www.sqlite.org/index.html)
+- **Płatności:** [Stripe](https://stripe.com/)
+- **Język:** [TypeScript](https://www.typescriptlang.org/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Uruchomienie Projektu
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Postępuj zgodnie z poniższymi instrukcjami, aby uruchomić projekt lokalnie.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Wymagania
 
-## Learn More
+- [Node.js](https://nodejs.org/en/) (wersja 20 lub nowsza)
+- [npm](https://www.npmjs.com/)
 
-To learn more about Next.js, take a look at the following resources:
+### Instalacja i Konfiguracja
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Sklonuj repozytorium:**
+    ```bash
+    git clone <adres-repozytorium>
+    cd reservation-system
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2.  **Zainstaluj zależności:**
+    ```bash
+    npm install
+    ```
 
-## Deploy on Vercel
+3.  **Skonfiguruj zmienne środowiskowe:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    Utwórz plik `.env` w głównym katalogu projektu i skopiuj do niego poniższą zawartość. Uzupełnij wartości dla kluczy Stripe.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```env
+    # Adres URL bazy danych Prisma (domyślnie SQLite)
+    DATABASE_URL="file:./dev.db"
+
+    # Klucze Stripe
+    # Znajdziesz je w panelu deweloperskim Stripe
+    STRIPE_SECRET_KEY=sk_test_...
+    STRIPE_WEBHOOK_SECRET=whsec_...
+    ```
+
+4.  **Uruchom migracje bazy danych:**
+
+    To polecenie utworzy bazę danych SQLite i tabele na podstawie schematu w `prisma/schema.prisma`.
+    ```bash
+    npx prisma migrate dev
+    ```
+
+5.  **Wypełnij bazę danych przykładowymi danymi (opcjonalnie):**
+
+    Uruchom skrypt seedujący, aby dodać do bazy kilka przykładowych pokojów.
+    ```bash
+    npx prisma db seed
+    ```
+
+6.  **Uruchom serwer deweloperski:**
+    ```bash
+    npm run dev
+    ```
+
+    Aplikacja będzie dostępna pod adresem [http://localhost:3000](http://localhost:3000).
+
+## Dostępne Skrypty
+
+- `npm run dev`: Uruchamia aplikację w trybie deweloperskim z Turbopack.
+- `npm run build`: Buduje aplikację do wersji produkcyjnej.
+- `npm run start`: Uruchamia zbudowaną aplikację produkcyjną.
+- `npm run lint`: Uruchamia ESLint w celu analizy kodu.
+- `npx prisma db seed`: Wypełnia bazę danych przykładowymi danymi.
