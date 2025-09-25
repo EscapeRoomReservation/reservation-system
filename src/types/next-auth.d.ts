@@ -1,6 +1,11 @@
 import NextAuth, { DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
+  interface User {
+    id: string;
+    hashedPassword?: string | null;
+  }
+
   /**
    * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
