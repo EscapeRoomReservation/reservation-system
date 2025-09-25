@@ -2,16 +2,22 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe';
 import { addMinutes } from 'date-fns';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+
     const body = await request.json();
     const {
       roomId,
       startTime,
-      customerName,
-      customerEmail,
     } = body;
+
+    const customerName = session?.user?.name ?? body.customerName;
+    const customerEmail = session?.user?.email ?? body.customerEmail;
+    const userId = session?.user?.id;
 
     if (!roomId || !startTime || !customerName || !customerEmail) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -55,6 +61,7 @@ export async function POST(request: Request) {
         endTime: bookingEndTime,
         customerName,
         customerEmail,
+        userId,
       },
     });
 
@@ -77,6 +84,7 @@ export async function POST(request: Request) {
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/rooms/${room.id}`,
+      customer_email: customerEmail, // Pass customer email to Stripe
       metadata: {
         bookingId: newBooking.id,
       },
