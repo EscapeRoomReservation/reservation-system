@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { notFound } from 'next/navigation';
 import BookingForm from '@/components/BookingForm';
-import { Room } from '@prisma/client';
+import { notFound } from 'next/navigation';
 
 interface RoomDetailsPageProps {
   params: {

@@ -31,23 +31,23 @@ export default function BookingForm({ room }: BookingFormProps) {
     }
   }, [session]);
 
-  const generateTimeSlots = (date: Date) => {
-    const slots = [];
-    const dayStart = new Date(date);
-    dayStart.setHours(9, 0, 0, 0); // Start at 9:00 AM
-    const dayEnd = new Date(date);
-    dayEnd.setHours(21, 0, 0, 0); // End at 9:00 PM
-
-    let current = dayStart;
-    while (current < dayEnd) {
-      slots.push(format(current, 'HH:mm'));
-      current = add(current, { minutes: room.duration });
-    }
-    return slots;
-  };
-
   useEffect(() => {
     if (selectedDate) {
+      const generateTimeSlots = (date: Date) => {
+        const slots = [];
+        const dayStart = new Date(date);
+        dayStart.setHours(9, 0, 0, 0); // Start at 9:00 AM
+        const dayEnd = new Date(date);
+        dayEnd.setHours(21, 0, 0, 0); // End at 9:00 PM
+    
+        let current = dayStart;
+        while (current < dayEnd) {
+          slots.push(format(current, 'HH:mm'));
+          current = add(current, { minutes: room.duration });
+        }
+        return slots;
+      };
+
       const fetchBookings = async () => {
         setIsLoading(true);
         try {
@@ -59,7 +59,8 @@ export default function BookingForm({ room }: BookingFormProps) {
           const available = allSlots.filter(slot => !bookedTimes.includes(slot));
           setAvailableTimes(available);
           setSelectedTime('');
-        } catch (err) {
+        } catch {
+          // Error is intentionally ignored. We're setting a generic error message.
           setError('Could not load available times.');
         } finally {
           setIsLoading(false);

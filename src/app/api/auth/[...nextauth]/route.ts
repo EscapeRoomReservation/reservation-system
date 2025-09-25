@@ -1,4 +1,4 @@
-import NextAuth, { AuthOptions, Session, User } from 'next-auth';
+import NextAuth, { AuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import EmailProvider from 'next-auth/providers/email';

@@ -1,15 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
-export async function GET(request: Request, { params }: Params) {
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const { id: roomId } = params;
+    const { id: roomId } = await context.params;
 
     if (!roomId) {
       return NextResponse.json({ error: 'Room ID is required' }, { status: 400 });
