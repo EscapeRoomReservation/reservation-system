@@ -42,12 +42,17 @@ const Header = () => {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => signIn()}
-                className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm"
-              >
-                Zaloguj się
-              </button>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => signIn()}
+                  className="bg-transparent text-blue-600 font-semibold py-2 px-4 rounded-md hover:bg-blue-50 transition-colors text-sm"
+                >
+                  Zaloguj się
+                </button>
+                <Link href="/register" className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm">
+                  Zarejestruj się
+                </Link>
+              </div>
             )}
           </div>
         </nav>
