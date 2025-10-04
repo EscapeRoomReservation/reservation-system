@@ -44,6 +44,7 @@ export async function GET() {
         user: {
           select: {
             name: true,
+            email: true,
           },
         },
       },
@@ -55,8 +56,14 @@ export async function GET() {
       title: `${booking.room.name} (${booking.user.name || 'Użytkownik'})`,
       start: booking.startTime,
       end: booking.endTime,
-      backgroundColor: booking.status === 'CONFIRMED' ? '#10B981' : '#F59E0B', // Green for confirmed, Amber for pending
+      backgroundColor: booking.status === 'CONFIRMED' ? '#10B981' : '#F59E0B',
       borderColor: booking.status === 'CONFIRMED' ? '#059669' : '#D97706',
+      extendedProps: {
+        roomName: booking.room.name,
+        userName: booking.user.name || 'Brak danych',
+        userEmail: booking.user.email || 'Brak danych',
+        status: booking.status,
+      },
     }));
 
     return NextResponse.json(events);

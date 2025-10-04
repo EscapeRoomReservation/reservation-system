@@ -5,6 +5,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import BookingDetailsModal from './BookingDetailsModal';
 
 
 interface CalendarEvent {
@@ -20,6 +21,13 @@ const BookingsCalendar = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  const handleEventClick = (clickInfo: any) => {
+    setSelectedEvent(clickInfo.event);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -58,8 +66,10 @@ const BookingsCalendar = () => {
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay',
         }}
-        events={events}
+                events={events}
         locale="pl" // Set locale to Polish
+        eventClick={handleEventClick} // Handle event click
+        firstDay={1} // Start week on Monday
         buttonText={{
           today: 'Dzisiaj',
           month: 'Miesiąc',
@@ -69,7 +79,12 @@ const BookingsCalendar = () => {
         allDaySlot={false} // We don't need the 'all-day' slot
         slotMinTime="08:00:00" // Calendar starts at 8 AM
         slotMaxTime="23:00:00" // Calendar ends at 11 PM
-        height="auto" // Adjust height to content
+                height="auto" // Adjust height to content
+      />
+      <BookingDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        event={selectedEvent}
       />
     </div>
   );
