@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { stripe } from '@/lib/stripe';
 import { addMinutes } from 'date-fns';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
