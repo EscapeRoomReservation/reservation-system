@@ -3,9 +3,9 @@ import BookingForm from '@/components/BookingForm';
 import { notFound } from 'next/navigation';
 
 interface RoomDetailsPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 async function getRoom(id: string) {
@@ -21,7 +21,8 @@ async function getRoom(id: string) {
 }
 
 export default async function RoomDetailsPage({ params }: RoomDetailsPageProps) {
-  const room = await getRoom(params.id);
+  const { id } = await params;
+  const room = await getRoom(id);
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden">
