@@ -18,3 +18,32 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* FullCalendar styles override */
+.fc a {
+  color: inherit; /* Make links inherit color */
+}
+
+.fc-button {
+  background: #3b82f6 !important; /* Blue background for buttons */
+  color: white !important;
+  border: none !important;
+  text-transform: capitalize !important;
+}
+
+.fc-button:hover {
+  background: #2563eb !important;
+}
+
+.fc-today-button {
+  background: #6b7280 !important; /* Gray for today button */
+}
+
+.fc-today-button:hover {
+  background: #4b5563 !important;
+}
+
+.fc-day-today {
+  background: #eff6ff !important; /* Light blue for today's date background */
+}
+

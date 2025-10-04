@@ -59,6 +59,13 @@ export default async function OwnerDashboard() {
         </div>
 
         <div>
+          <h2 className="text-2xl font-semibold mb-4">Nawigacja</h2>
+          <div className="p-6 border rounded-lg shadow-sm bg-white mb-8">
+            <Link href="/owner/calendar" className="block w-full text-center py-3 px-4 border border-transparent rounded-md shadow-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+              Zobacz kalendarz rezerwacji
+            </Link>
+          </div>
+
           <h2 className="text-2xl font-semibold mb-4">Dodaj nową lokalizację</h2>
           <div className="p-6 border rounded-lg shadow-sm bg-white">
             <AddLocationForm />
