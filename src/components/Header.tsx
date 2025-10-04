@@ -20,11 +20,20 @@ const Header = () => {
               </Link>
             </li>
             {session && (
-              <li>
-                <Link href="/my-bookings" className="hover:text-blue-600 transition-colors">
-                  Moje Rezerwacje
-                </Link>
-              </li>
+              <>
+                <li>
+                  <Link href="/my-bookings" className="hover:text-blue-600 transition-colors">
+                    Moje Rezerwacje
+                  </Link>
+                </li>
+                {session.user.role === 'OWNER' && (
+                  <li>
+                    <Link href="/owner" className="hover:text-blue-600 transition-colors">
+                      Panel Właściciela
+                    </Link>
+                  </li>
+                )}
+              </>
             )}
           </ul>
           <div className="w-px h-6 bg-gray-200"></div>

@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AuthProvider from '@/components/AuthProvider';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,11 +29,12 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen bg-gray-100`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen bg-white text-gray-900`}
       >
         <AuthProvider>
           <Header />
           <main className="flex-grow container mx-auto p-4 md:p-6">
+            <Breadcrumbs />
             {children}
           </main>
           <Footer />
