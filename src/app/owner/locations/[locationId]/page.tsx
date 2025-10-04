@@ -23,20 +23,19 @@ async function getLocationDetails(locationId: string, ownerId: string) {
 
   if (!location) {
     notFound();
+  }
 
   return location;
 }
 
 interface LocationDetailsPageProps {
-  params: {
-    locationId: string;
-  };
+  params: { locationId: string };
 }
 
 export default async function LocationDetailsPage({ params }: LocationDetailsPageProps) {
   const session = await getServerSession(authOptions);
 
-{{ ... }}
+  if (!session || session.user.role !== 'OWNER') {
     notFound();
   }
 
@@ -45,7 +44,7 @@ export default async function LocationDetailsPage({ params }: LocationDetailsPag
   return (
     <div className="container mx-auto p-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold">{location.name}</h1>
+        <h1 className="text-gray-500 text-3xl font-bold">{location.name}</h1>
         <p className="text-gray-500">{location.address}</p>
       </div>
 

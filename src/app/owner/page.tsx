@@ -37,13 +37,13 @@ export default async function OwnerDashboard() {
   return (
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Panel Właściciela</h1>
+        <h1 className="text-3xl text-gray-600 font-bold">Panel Właściciela</h1>
         <p className="text-gray-600">Witaj, {session.user.name}!</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
-          <h2 className="text-2xl font-semibold mb-4">Twoje lokalizacje</h2>
+          <h2 className="text-2xl text-gray-600 font-semibold mb-4">Twoje lokalizacje</h2>
           <div className="space-y-4">
             {locations.length > 0 ? (
               locations.map((location) => (
