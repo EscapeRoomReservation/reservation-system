@@ -1,0 +1,85 @@
+'use client';
+
+import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { Room } from '@prisma/client';
+
+interface EditRoomFormProps {
+  room: Room;
+}
+
+export default function EditRoomForm({ room }: EditRoomFormProps) {
+  const [name, setName] = useState(room.name);
+  const [description, setDescription] = useState(room.description);
+  const [capacity, setCapacity] = useState(room.capacity.toString());
+  const [price, setPrice] = useState(room.price.toString());
+  const [duration, setDuration] = useState(room.duration.toString());
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/rooms/${room.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          description,
+          capacity: parseInt(capacity, 10),
+          price: parseFloat(price),
+          duration: parseInt(duration, 10),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update room');
+      }
+
+      router.push(`/owner/locations/${room.locationId}`);
+      router.refresh(); // To ensure the list on the previous page is updated
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && <p className="text-red-500">{error}</p>}
+      <div>
+        <label htmlFor="room-name" className="block text-sm font-medium text-gray-700">Nazwa pokoju</label>
+        <input type="text" id="room-name" value={name} onChange={(e) => setName(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+      </div>
+      <div>
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Opis</label>
+        <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="capacity" className="block text-sm font-medium text-gray-700">Pojemność</label>
+          <input type="number" id="capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        </div>
+        <div>
+          <label htmlFor="price" className="block text-sm font-medium text-gray-700">Cena (PLN)</label>
+          <input type="number" step="0.01" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        </div>
+      </div>
+      <div>
+        <label htmlFor="duration" className="block text-sm font-medium text-gray-700">Czas trwania (min)</label>
+        <input type="number" id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+      </div>
+      <button type="submit" disabled={isLoading} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400">
+        {isLoading ? 'Zapisywanie...' : 'Zapisz zmiany'}
+      </button>
+    </form>
+  );
+}

@@ -1,10 +1,26 @@
 import { prisma } from '@/lib/prisma';
 import { Room } from '@prisma/client';
-import AddRoomForm from '@/components/admin/AddRoomForm';
 
-async function getRooms(): Promise<Room[]> {
+// Define a more specific type for the room with its relations
+type RoomWithDetails = Room & {
+  location: {
+    name: string;
+    owner: {
+      name: string | null;
+    };
+  };
+};
+
+async function getRooms(): Promise<RoomWithDetails[]> {
   try {
     const rooms = await prisma.room.findMany({
+      include: {
+        location: {
+          include: {
+            owner: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: 'desc',
       },
@@ -21,32 +37,38 @@ export default async function AdminRoomsPage() {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">Zarządzanie pokojami</h1>
-
-      <div className="mb-10 p-6 border rounded-lg shadow-md bg-white">
-        <h2 className="text-2xl font-semibold mb-4">Dodaj nowy pokój</h2>
-        <AddRoomForm />
-      </div>
-
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Lista istniejących pokoi</h2>
-        <div className="space-y-4">
-          {rooms.length > 0 ? (
-            rooms.map((room) => (
-              <div key={room.id} className="border p-4 rounded-lg shadow-sm bg-white">
-                <h3 className="font-bold text-xl">{room.name}</h3>
-                <p className="text-gray-600 mt-1">{room.description}</p>
-                <div className="flex space-x-4 mt-2 text-sm text-gray-800">
-                  <span>Pojemność: <strong>{room.capacity} os.</strong></span>
-                  <span>Cena: <strong>{room.price} PLN</strong></span>
-                  <span>Czas trwania: <strong>{room.duration} min.</strong></span>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">Nie dodano jeszcze żadnych pokoi.</p>
-          )}
-        </div>
+      <h1 className="text-3xl font-bold mb-6">Wszystkie pokoje</h1>
+      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <table className="min-w-full leading-normal">
+          <thead>
+            <tr>
+              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Pokój
+              </th>
+              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Lokalizacja
+              </th>
+               <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Właściciel
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rooms.map((room) => (
+              <tr key={room.id}>
+                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">{room.name}</p>
+                </td>
+                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">{room.location.name}</p>
+                </td>
+                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">{room.location.owner.name}</p>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

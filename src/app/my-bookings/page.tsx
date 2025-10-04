@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
+import CancelBookingButton from '@/components/CancelBookingButton';
 
 export default async function MyBookingsPage() {
   const session = await getServerSession(authOptions);
@@ -38,8 +39,11 @@ export default async function MyBookingsPage() {
                 </p>
                 <p className="text-sm text-gray-500 mt-2">Status: <span className="font-medium">{booking.status}</span></p>
               </div>
-              <div className="text-right">
+              <div className="text-right flex flex-col items-end">
                 <p className="text-lg font-semibold">{(booking.room.price).toFixed(2)} PLN</p>
+                <div className="mt-4">
+                  <CancelBookingButton bookingId={booking.id} status={booking.status} />
+                </div>
               </div>
             </div>
           ))}

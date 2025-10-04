@@ -11,8 +11,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Location {
+  id        String  @id @default(cuid())
+  name      String
+  address   String
+  owner     User    @relation(fields: [ownerId], references: [id])
+  ownerId   String
+  rooms     Room[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Room {
   id          String    @id @default(cuid())
+  location    Location  @relation(fields: [locationId], references: [id])
+  locationId  String
   name        String
   description String
   capacity    Int
@@ -69,15 +83,20 @@ model Session {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String?   @unique
-  emailVerified  DateTime?
-  image          String?
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
   hashedPassword String?
-  accounts       Account[]
-  sessions       Session[]
-  bookings       Booking[]
+  role          Role      @default(USER)
+  accounts      Account[]
+  sessions      Session[]
+  locations     Location[]
+  bookings      Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -92,4 +111,10 @@ enum BookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
+}
+
+enum Role {
+  USER
+  OWNER
+  ADMIN
 }

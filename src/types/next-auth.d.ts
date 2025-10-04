@@ -1,18 +1,22 @@
-import { DefaultSession } from 'next-auth';
+import { DefaultSession, User } from 'next-auth';
+import { Role } from '@prisma/client';
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string;
+    role: Role;
+  }
+}
 
 declare module 'next-auth' {
-  interface User {
-    id: string;
-    hashedPassword?: string | null;
-  }
-
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
   interface Session {
     user: {
-      /** The user's id. */
       id: string;
+      role: Role;
     } & DefaultSession['user'];
+  }
+
+  interface User {
+    role: Role;
   }
 }
