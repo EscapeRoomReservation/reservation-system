@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'EscapeRoom Pro - Rezerwuj Przygodę',
+  title: 'EscapeRoom - Rezerwuj Przygodę',
   description: 'System rezerwacji dla najlepszych pokojów zagadek.',
 };
 

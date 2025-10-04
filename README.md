@@ -70,8 +70,8 @@ Postępuj zgodnie z poniższymi instrukcjami, aby uruchomić projekt lokalnie.
 
 ## Dostępne Skrypty
 
-- `npm run dev`: Uruchamia aplikację w trybie deweloperskim z Turbopack.
-- `npm run build`: Buduje aplikację do wersji produkcyjnej.
-- `npm run start`: Uruchamia zbudowaną aplikację produkcyjną.
-- `npm run lint`: Uruchamia ESLint w celu analizy kodu.
-- `npx prisma db seed`: Wypełnia bazę danych przykładowymi danymi.
+- `docker compose exec app npm run dev`: Uruchamia aplikację w trybie deweloperskim z Turbopack.
+- `docker compose exec app npm run build`: Buduje aplikację do wersji produkcyjnej.
+- `docker compose exec app npm run start`: Uruchamia zbudowaną aplikację produkcyjną.
+- `docker compose exec app npm run lint`: Uruchamia ESLint w celu analizy kodu.
+- `docker compose exec app npx prisma db seed`: Wypełnia bazę danych przykładowymi danymi.

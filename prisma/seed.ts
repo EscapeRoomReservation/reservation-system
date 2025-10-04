@@ -1,10 +1,12 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('Start seeding...');
 
+  await prisma.user.deleteMany();
   await prisma.room.deleteMany();
 
   await prisma.room.create({
@@ -34,6 +36,16 @@ async function main() {
       capacity: 8,
       price: 180.00,
       duration: 90,
+    },
+  });
+
+    const hashedPassword = await bcrypt.hash('Test123!@#', 12);
+
+  await prisma.user.create({
+    data: {
+      email: 'luk.gaw@o2.pl',
+      name: 'Łukasz Gaw',
+      hashedPassword: hashedPassword,
     },
   });
 

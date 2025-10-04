@@ -10,7 +10,7 @@ const Header = () => {
     <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
       <div className="container mx-auto flex justify-between items-center p-4">
         <Link href="/" className="text-2xl font-bold tracking-tight text-gray-900 hover:text-blue-600 transition-colors">
-          EscapeRoom Pro
+          EscapeRoom
         </Link>
         <nav className="flex items-center space-x-8">
           <ul className="flex space-x-8 font-medium text-gray-600">

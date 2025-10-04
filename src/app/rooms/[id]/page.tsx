@@ -21,7 +21,8 @@ async function getRoom(id: string) {
 }
 
 export default async function RoomDetailsPage({ params }: RoomDetailsPageProps) {
-  const room = await getRoom(params.id);
+  const { id } = params;
+  const room = await getRoom(id);
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden">
